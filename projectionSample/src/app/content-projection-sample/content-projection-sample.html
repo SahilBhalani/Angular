@@ -1,0 +1,8 @@
+<p>This is content from the component template</p>
+<ng-content></ng-content>
+<p>This is another content from component template</p>
+<ng-content select="[second]"></ng-content>
+
+<div *ngIf="show">
+  <ng-container [ngTemplateOutlet]="greet.template"></ng-container>
+</div>
