@@ -3,3 +3,9 @@
 <app-expense-manager></app-expense-manager>
 <app-my-lifecycle-sample></app-my-lifecycle-sample>
 <app-view-encapsulation-sample></app-view-encapsulation-sample>
+<app-child-counter #child></app-child-counter>
+<p>counter: {{child.counter}}</p>
+<button (click)="inc()">Increment</button>
+<button (click)="dec()">Decrement</button>
+<app-my-counter-service />
+<app-my-counter-service />
