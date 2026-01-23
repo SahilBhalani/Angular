@@ -91,6 +91,12 @@ import { CommonModule } from '@angular/common';
     <p *ngIf="user1 as u; else empty">Hello {{ u.name }}!</p>
     <ng-template #empty>No user</ng-template>
     <hr />
+
+    <h3>Built-in Pipes</h3>
+    <p>Today : {{ today | date: 'yyyy-MM-dd' }}</p>
+    <p>Name: {{ fname | uppercase }}</p>
+    <p>Chained : {{ ratio | percent: '1.0-2' | uppercase }}</p>
+    <hr />
   `,
 })
 export class App {
@@ -120,6 +126,10 @@ export class App {
   toggle1() {
     this.user1 = this.user1 ? null : { name: 'Sai' };
   }
+
+  today = new Date();
+  fname = 'Sahil Bhalani';
+  ratio = 0.786;
 }
 
 bootstrapApplication(App);
