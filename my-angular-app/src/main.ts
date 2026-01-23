@@ -85,6 +85,12 @@ import { CommonModule } from '@angular/common';
     <p>Count: {{ count }}</p>
     <p>Text: {{ text || '(empty)' }}</p>
     <hr />
+
+    <h3>*ngIf with as</h3>
+    <button (click)="toggle1()">Toggle User</button>
+    <p *ngIf="user1 as u; else empty">Hello {{ u.name }}!</p>
+    <ng-template #empty>No user</ng-template>
+    <hr />
   `,
 })
 export class App {
@@ -109,6 +115,11 @@ export class App {
 
   count = 0;
   text = '';
+
+  user1: { name: string } | null = { name: 'Sai' };
+  toggle1() {
+    this.user1 = this.user1 ? null : { name: 'Sai' };
+  }
 }
 
 bootstrapApplication(App);
