@@ -48,6 +48,43 @@ import { CommonModule } from '@angular/common';
     <ul>
       <li *ngFor="let item of items; index as i">{{ i }} - {{ item }}</li>
     </ul>
+
+    <h3>Templates with ngTemplateOutlet</h3>
+
+    <label>
+      Type:
+      <select (change)="type = $any($event.target).value">
+        <option value="info">info</option>
+        <option value="warning">warning</option>
+        <option value="success">success</option>
+      </select>
+    </label>
+
+    <label> Message: <input (input)="msg = $any($event.target).value" [value]="msg" /> </label>
+
+    <ng-container
+      [ngTemplateOutlet]="type === 'info' ? infoTpl : type === 'warning' ? warnTpl : successTpl"
+      [ngTemplateOutletContext]="{ $implicit: msg }"
+    >
+    </ng-container>
+
+    <ng-template #infoTpl let-text>
+      <p style="color: royalblue">Info: {{ text }}</p>
+    </ng-template>
+    <ng-template #warnTpl let-text>
+      <p style="color: darkorange">Warning: {{ text }}</p>
+    </ng-template>
+    <ng-template #successTpl let-text>
+      <p style="color: seagreen">Success: {{ text }}</p>
+    </ng-template>
+    <hr />
+
+    <h3>Template Statements and $event</h3>
+    <button (click)="count = count + 1">Increment</button>
+    <input placeholder="Type" (input)="text = $any($event.target).value" [value]="text" />
+    <p>Count: {{ count }}</p>
+    <p>Text: {{ text || '(empty)' }}</p>
+    <hr />
   `,
 })
 export class App {
@@ -66,6 +103,12 @@ export class App {
 
   ok = true;
   items = ['A', 'B', 'C'];
+
+  type = 'info';
+  msg = 'Hello';
+
+  count = 0;
+  text = '';
 }
 
 bootstrapApplication(App);
