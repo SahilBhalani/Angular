@@ -1,26 +1,105 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+// type Item = { id: number; name: string };
+
 @Component({
-  selector: 'app-root',
+  selector: 'hello-comp',
   standalone: true,
-  imports: [CommonModule],
+  template: ` <p>Hello {{ name }} from child!</p> `,
+})
+export class HelloComponent {
+  @Input() name = '';
+}
+
+@Component({
+  selector: 'counter-button',
+  standalone: true,
+  template: ` <button (click)="inc()">Clicked {{ count }} times</button> `,
+})
+export class CounterButton {
+  @Input() step = 1;
+  @Output()
+  clicked = new EventEmitter();
+  count = 0;
+  inc() {
+    this.count += this.step;
+    this.clicked.emit(this.count);
+  }
+}
+
+@Component({
+  selector: 'w3-card',
+  standalone: true,
   styles: [
     `
-      .toolbar {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        flex-wrap: wrap;
+      .card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 12px;
+        max-width: 360px;
       }
-      input {
-        padding: 6px 8px;
+      .card-header {
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      .card-body {
+        color: #333;
       }
     `,
   ],
   template: `
-    <h3>{{ title }}</h3>
+    <div class="card">
+      <div class="card-header"><ng-content select="[card-title]"></ng-content></div>
+      <div class="card-body"><ng-content></ng-content></div>
+    </div>
+  `,
+})
+export class CardComponent {}
+@Component({
+  selector: 'demo',
+  standalone: true,
+  template: `<p>Lifecycle</p>`,
+})
+export class Demo implements OnInit, OnDestroy {
+  intervalid: any;
+  ngOnInit() {
+    this.intervalid = setInterval(() => {
+      /* */
+    }, 1000);
+  }
+  ngOnDestroy(): void {
+    clearInterval(this.intervalid);
+  }
+}
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, HelloComponent, CounterButton, CardComponent, Demo],
+  template: `
+    <h3>Parent Component</h3>
+    <hello-comp [name]="user"></hello-comp>
+    <hr />
+    <h3>Component Output</h3>
+    <counter-button [step]="2" (clicked)="onChildClicked($event)"></counter-button>
+    <p>Parent Received: {{ lastCount }}</p>
+
+    <h3>Content Projection (ng-content)</h3>
+    <w3-card>
+      <span card-title>Welcome</span>
+      <p>Project any markup into a reusable shell component.</p>
+    </w3-card>
+    <br />
+
+    <w3-card>
+      <span card-title>Another Card</span>
+      <ul>
+        <li>Works with lists</li>
+        <li>Images, buttons, etc.</li>
+      </ul>
+    </w3-card>
+    <!-- <h3>{{ title }}</h3>
     <p>Hello {{ name }}</p>
     <p>2 + 3 = {{ 2 + 3 }}</p>
     <p>Upper: {{ name.toUpperCase() }}</p>
@@ -97,39 +176,87 @@ import { CommonModule } from '@angular/common';
     <p>Name: {{ fname | uppercase }}</p>
     <p>Chained : {{ ratio | percent: '1.0-2' | uppercase }}</p>
     <hr />
+
+    <h3>Attribute binding (attr.)</h3>
+    <button [attr.aria-label]="label" (click)="toggleA()">Toggle Label</button>
+    <table border="1" style="margin-top:8px">
+      <tr>
+        <th>A</th>
+        <th>B</th>
+        <th>C</th>
+      </tr>
+      <tr>
+        <td [attr.colspan]="wide ? 2 : 1">Row 1</td>
+        <td>Cell</td>
+        <td>Cell</td>
+      </tr>
+    </table>
+    <hr />
+
+    <h3>TrackBy with *ngFor</h3>
+    <button (click)="shuffle()">Shuffle</button>
+    <ul>
+      <li *ngFor="let it of itemss; trackBy: trackById">{{ it.id }} - {{ it.name }}</li>
+    </ul> -->
   `,
 })
 export class App {
-  title = 'Templates & Interpolation';
-  name = 'Angular';
+  // title = 'Templates & Interpolation';
+  // name = 'Angular';
 
-  current = '';
-  read(val: string) {
-    this.current = val ?? '';
+  // current = '';
+  // read(val: string) {
+  //   this.current = val ?? '';
+  // }
+
+  // user: { profile?: { email?: string } } | undefined = undefined;
+  // toggle() {
+  //   this.user = this.user ? undefined : { profile: { email: 'sahil@example.com' } };
+  // }
+
+  // ok = true;
+  // items = ['A', 'B', 'C'];
+
+  // type = 'info';
+  // msg = 'Hello';
+
+  // count = 0;
+  // text = '';
+
+  // user1: { name: string } | null = { name: 'Sai' };
+  // toggle1() {
+  //   this.user1 = this.user1 ? null : { name: 'Sai' };
+  // }
+
+  // today = new Date();
+  // fname = 'Sahil Bhalani';
+  // ratio = 0.79;
+
+  // wide = true;
+  // get label() {
+  //   return this.wide ? 'Table is wide' : 'Table is narrow';
+  // }
+  // toggleA() {
+  //   this.wide = !this.wide;
+  // }
+
+  // itemss: Item[] = [
+  //   { id: 1, name: 'Alpha' },
+  //   { id: 2, name: 'Beta' },
+  //   { id: 3, name: 'Gamma' },
+  // ];
+  // shuffle() {
+  //   this.itemss = [...this.itemss].reverse();
+  // }
+  // trackById(_i: number, it: Item) {
+  //   return it.id;
+  // }
+
+  user = 'Angular';
+  lastCount = 0;
+  onChildClicked(n: number): void {
+    this.lastCount = n;
   }
-
-  user: { profile?: { email?: string } } | undefined = undefined;
-  toggle() {
-    this.user = this.user ? undefined : { profile: { email: 'sahil@example.com' } };
-  }
-
-  ok = true;
-  items = ['A', 'B', 'C'];
-
-  type = 'info';
-  msg = 'Hello';
-
-  count = 0;
-  text = '';
-
-  user1: { name: string } | null = { name: 'Sai' };
-  toggle1() {
-    this.user1 = this.user1 ? null : { name: 'Sai' };
-  }
-
-  today = new Date();
-  fname = 'Sahil Bhalani';
-  ratio = 0.786;
 }
 
 bootstrapApplication(App);
