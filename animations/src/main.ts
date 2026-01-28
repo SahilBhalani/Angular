@@ -12,8 +12,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
   animations: [
     trigger('openClose', [
       state('open', style({ height: '80px', opacity: 1 })),
-      state('closed', style({ height: '0px', opacity: 0 })),
-      transition('open <=> closed', [animate('200ms ease-in-out')]),
+      state('close', style({ height: '0px', opacity: 0 })),
+      transition('open <=> close', [animate('600ms ease-in-out')]),
     ]),
   ],
   template: `
@@ -21,7 +21,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
     <h3>Animations</h3>
     <button (click)="open = !open">Toggle</button>
     <div
-      [@openClose]="open ? 'open' : 'closed'"
+      [@openClose]="open ? 'open' : 'close'"
       style="overflow:hidden; background: #e3f2fd; margin-top: 8px"
     >
       Panel
